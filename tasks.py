@@ -22,7 +22,7 @@ if date.today().weekday() == 4:
             day = day + delta
         f.date = day
         f.save()
-        #os.utime('/var/www/ktmtwwub_pythonanywhere_com_wsgi.py')
+        os.utime('/var/www/ktmtwwub_pythonanywhere_com_wsgi.py')
 #Check if today is Thursday.
 #If yes, finish the ordering.
 elif date.today().weekday() == 5:
@@ -32,5 +32,5 @@ elif date.today().weekday() == 5:
             print('Updated')
             f.ordering_finished = True
             f.save()
-            #os.utime('/var/www/ktmtwwub_pythonanywhere_com_wsgi.py')
+            os.utime('/var/www/ktmtwwub_pythonanywhere_com_wsgi.py')
 
