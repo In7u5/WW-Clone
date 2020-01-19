@@ -1,0 +1,161 @@
+{% extends "wwlist/base.html" %}
+{% block content %}
+{% load custom_filters %}
+
+{% for Friday in Fridays %}
+    <h1 style="text-align:left;float:left">{{ Friday.date }}</h1>
+    {% if Friday.ordering_finished == True %}
+        <h2 class="font-weight-bold text-danger" style="text-align:right;float:right">CLOSED</h2>
+    {% endif %}
+
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Member</th>
+                <th class="text-center" scope="col">Balance</th>
+                <th class="text-center" scope="col" style="width: 20%">WW</th>
+                <th class="text-center" scope="col" style="width: 20%;">Brezn</th>
+                <th class="text-danger text-center" scope="col" style="width: 10%;">-€</th>
+                <th class="text-success text-center" scope="col" style="width: 10%;">+€</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for Balance in Balances %}
+                {% if Balance.friday == Friday %}
+                    {% for WW_Order in WW_Orders %}
+                        {% if WW_Order.friday == Friday and WW_Order.user == Balance.user %}
+                            {% if WW_Order.ww > 0 or WW_Order.brezn > 0 %}
+                            <tr>
+                                <th>{{ WW_Order.user.first_name }} {{ WW_Order.user.last_name }}</th>
+                                {% if Balance.balance >= 0 %}
+                                    <td class="text-success text-center">{{ Balance.balance }}€</td>
+                                {% else %}
+                                    <td class="text-danger text-center">{{ Balance.balance }}€</td>
+                                {% endif %}
+                                <td class="text-center">{{ WW_Order.ww }}</td>
+                                <td class="text-center">{{ WW_Order.brezn }}</td>
+                                <td class="text-danger text-center">{{ WW_Order.price_total }}€</td>
+                                {% if WW_Order.purchase == 0 %}
+                                    <td class="text-center">-</td>
+                                {% else %}
+                                    <td class="bg-success text-center">{{ WW_Order.purchase }}€</td>
+                                {% endif %}
+                            </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="table table-sm table dark">
+        <thead>
+            <tr>
+                <td>Price</td>
+                <th scope="col">€/WW</th>
+                <th scope="col">+ € Senf/WW</th>
+                <th scope="col">€/Brezn</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row"></th>
+                <td>{{ Friday.cost_ww }}</td>
+                <td>{{ Friday.cost_mustard }}</td>
+                <td>{{ Friday.cost_brezn }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <!-- <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Member</th>
+                <th class="text-center" scope="col">Balance</th>
+                <th class="text-center" scope="col" style="width: 20%">WW</th>
+                <th class="text-center" scope="col" style="width: 20%;">Brezn</th>
+                <th class="text-danger text-center" scope="col" style="width: 10%;">-€</th>
+                <th class="text-success text-center" scope="col" style="width: 10%;">+€</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for WW_Order in WW_Orders %}
+                {% if WW_Order.friday == Friday %}
+                    {% for User in Users %}
+                        {% if User == WW_Order.user %}
+                            {% if WW_Order.ww > 0 or WW_Order.brezn > 0 %}
+                            <tr>
+                                <th>{{ WW_Order.user.first_name }} {{ WW_Order.user.last_name }}</th>
+                                {% for Balance in Balances %}
+                                    {% if Balance.friday == Friday and Balance.user == User %}
+                                        {% if Balance.balance >= 0 %}
+                                            <td class="text-success text-center">{{ Balance.balance }}€</td>
+                                        {% else %}
+                                            <td class="text-danger text-center">{{ Balance.balance }}€</td>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                <td class="text-center">{{ WW_Order.ww }}</td>
+                                <td class="text-center">{{ WW_Order.brezn }}</td>
+                                <td class="text-danger text-center">{{ WW_Order.price_total }}€</td>
+                                {% if WW_Order.purchase == 0 %}
+                                    <td class="text-center">-</td>
+                                {% else %}
+                                    <td class="bg-success text-center">{{ WW_Order.purchase }}€</td>
+                                {% endif %}
+                            </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="table table-sm table dark">
+        <thead>
+            <tr>
+                <td>Price</td>
+                <th scope="col">€/WW</th>
+                <th scope="col">+ € Senf/WW</th>
+                <th scope="col">€/Brezn</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row"></th>
+                <td>{{ Friday.cost_ww }}</td>
+                <td>{{ Friday.cost_mustard }}</td>
+                <td>{{ Friday.cost_brezn }}</td>
+            </tr>
+        </tbody>
+    </table> -->
+
+
+{% endfor %}
+
+
+{% if is_paginated %}
+
+    {% if page_obj.has_previous %}
+        <a class="btn btn-outline-dark mb-4" href="?page=1">First</a>
+        <a class="btn btn-outline-dark mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+           <a class="btn btn-dark mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="btn btn-outline-dark mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a class="btn btn-outline-dark mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="btn btn-outline-dark mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+
+{% endif %}
+{% endblock content %}
