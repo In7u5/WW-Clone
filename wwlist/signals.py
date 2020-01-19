@@ -7,13 +7,16 @@ from django.contrib.auth.models import User
 from .models import Friday, WW_Order, Balance, Initial_Balance
 import decimal
 import secrets
-import socket
+import os
 from datetime import date
 
-try:
-    HOSTNAME = socket.gethostname()
-except:
-    HOSTNAME = '127.0.0.1:8000'
+import environ
+env = environ.Env(
+    # set casting, default value
+)
+# reading .env file
+environ.Env.read_env()
+HOSTNAME = env('HOSTNAME')
 
 
 def update_balance(user, friday):
