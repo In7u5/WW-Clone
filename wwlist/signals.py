@@ -54,6 +54,7 @@ def create_ww_order(sender, instance, created, **kwargs):
                 text_message = 'Servus ' + str(user.first_name) + ',\n\n' + \
                                 'hier deine Einladung für den ' + str(instance) + '.\n' + \
                                 'Bitte benutze den folgenden Link für deine Bestellung:' + 'http://' + str(HOST_ADDRESS) + '/order/' + str(order_id) + '\n' + \
+                                'Username: ww / Password: Wurst1' + '\n' + \
                                 'Bestellungen werden bis zum Vortag, um 12:00 Uhr angenommen. Ab dann ist dieser Link nicht mehr erreichbar. \n\n' + \
                                 'Viele Grüße\n' + \
                                 'Das WW-Team'
@@ -98,7 +99,8 @@ def create_ww_order(sender, instance, created, **kwargs):
                 text_message = 'Servus ' + str(email_name) + ',\n\n' + \
                                     'bitte für morgen '  + str(sum_ww) + ' (Stück) WW und ' + str(sum_brezn) + ' Brezn besorgen und fachgerecht zubereiten.\n' + \
                                     'Schau bitte auch noch nach, ob genügend Senf vorhanden ist.' + '\n\n' + \
-                                    'Übersicht:' + 'http://' + str(HOST_ADDRESS)  + '\n\n' + \
+                                    'Übersicht:' + 'http://' + str(HOST_ADDRESS)  + '\n' + \
+                                    'Username: ww / Password: Wurst1' + '\n\n' + \
                                     'Viele Grüße\n' + \
                                     'Das WW-Team'
                 purchasing_mail = EmailMessage(subject='WW und Brezn',
