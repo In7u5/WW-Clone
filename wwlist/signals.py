@@ -70,6 +70,7 @@ def create_ww_order(sender, instance, created, **kwargs):
     #Loop through all active Users and create Orders for them, as soon as a new Friday is created.
     if created:
         email_list = []
+        hostname = str(HOSTNAME)
         for user in User.objects.all():
             if user.is_active:
                 #Create a unique ID for every Order, which will be used as the Primary-Key and the URL
@@ -80,10 +81,10 @@ def create_ww_order(sender, instance, created, **kwargs):
                 update_balance(user, instance)
 
                 #Prepare Emails to every User with the unique Order-Link
-                html_message = render_to_string('wwlist/ww_order_email.html', {'user_first_name': user.first_name, 'HOSTNAME' : str(HOSTNAME), 'order_id': order_id})
+                html_message = render_to_string('wwlist/ww_order_email.html', {'user_first_name': user.first_name, 'hostname' : hostname, 'order_id': order_id})
                 text_message = 'Servus ' + str(user.first_name) + ',\n\n' + \
                                 'hier deine Einladung für den ' + str(instance) + '.\n' + \
-                                'Bitte benutze den folgenden Link für deine Bestellung:' + 'http://' + str(HOSTNAME) + '/order/' + str(order_id) + '\n' + \
+                                'Bitte benutze den folgenden Link für deine Bestellung:' + 'http://' + hostname + '/order/' + str(order_id) + '\n' + \
                                 'Username: ww / Password: Wurst1' + '\n' + \
                                 'Bestellungen werden bis zum Vortag, um 12:00 Uhr angenommen. Ab dann ist dieser Link nicht mehr erreichbar. \n\n' + \
                                 'Viele Grüße\n' + \
