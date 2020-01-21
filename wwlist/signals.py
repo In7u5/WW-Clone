@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save, pre_save
 from django.db.models import Q, Sum
 from django.dispatch import receiver
-from django.core.mail import send_mail, send_mass_mail, EmailMessage
+from django.core.mail import EmailMessage, get_connection, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from .models import Friday, WW_Order, Balance, Initial_Balance
@@ -17,6 +17,29 @@ env = environ.Env(
 # reading .env file
 environ.Env.read_env()
 HOSTNAME = env('HOSTNAME')
+
+
+def send_mass_html_mail(datatuple, fail_silently=False, user=None, password=None, 
+                        connection=None):
+    """
+    Given a datatuple of (subject, text_content, html_content, from_email,
+    recipient_list), sends each message to each recipient list. Returns the
+    number of emails sent.
+
+    If from_email is None, the DEFAULT_FROM_EMAIL setting is used.
+    If auth_user and auth_password are set, they're used to log in.
+    If auth_user is None, the EMAIL_HOST_USER setting is used.
+    If auth_password is None, the EMAIL_HOST_PASSWORD setting is used.
+
+    """
+    connection = connection or get_connection(
+        username=user, password=password, fail_silently=fail_silently)
+    messages = []
+    for subject, text, html, from_email, recipient in datatuple:
+        message = EmailMultiAlternatives(subject, text, from_email, recipient)
+        message.attach_alternative(html, 'text/html')
+        messages.append(message)
+    return connection.send_messages(messages)
 
 
 def update_balance(user, friday):
@@ -57,7 +80,7 @@ def create_ww_order(sender, instance, created, **kwargs):
                 update_balance(user, instance)
 
                 #Prepare Emails to every User with the unique Order-Link
-                html_message = render_to_string('wwlist/ww_order_email.html', {'user_first_name': user.first_name, 'order_id': order_id})
+                html_message = render_to_string('wwlist/ww_order_email.html', {'user_first_name': user.first_name, 'HOSTNAME:str(HOSTNAME), 'order_id': order_id})
                 text_message = 'Servus ' + str(user.first_name) + ',\n\n' + \
                                 'hier deine Einladung für den ' + str(instance) + '.\n' + \
                                 'Bitte benutze den folgenden Link für deine Bestellung:' + 'http://' + str(HOSTNAME) + '/order/' + str(order_id) + '\n' + \
@@ -65,12 +88,14 @@ def create_ww_order(sender, instance, created, **kwargs):
                                 'Bestellungen werden bis zum Vortag, um 12:00 Uhr angenommen. Ab dann ist dieser Link nicht mehr erreichbar. \n\n' + \
                                 'Viele Grüße\n' + \
                                 'Das WW-Team'
-                email_list.append(('WW und Brezn', text_message, 'WWuB', [user.email]))
+                email_list.append(('WW und Brezn', text_message, html_message, 'WWuB', [user.email]))
 
         #Check if the date is still in the future, before sending the invitations.
         if instance.date > date.today():
             #Send out all the Emails at once.
-            send_mass_mail(tuple(email_list))
+            #send_mass_mail(tuple(email_list))
+            send_mass_html_mail(tuple(email_list))
+            
 
     else:
         #Update the balance, as soon as the coresponding Friday is updated (e.g. price changes).
