@@ -22,7 +22,7 @@ from wwlist import views as wwlist_views
 urlpatterns = [
     path('', wwlist_views.Overview.as_view(), name='overview'),
     path('order/<slug:order_id>/', wwlist_views.OrderUpdateView.as_view(), name='order'),
-    path('admin/', admin.site.urls, name='admin'),
+    path('admin/', admin.site.urls),
 ]
 
 # if settings.DEBUG:
