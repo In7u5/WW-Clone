@@ -29,8 +29,14 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{% url 'overview' %}">Home</a>
-              <a class="nav-item nav-link" href="{% url 'admin' %}">Admin</a>
+              <a class="nav-item nav-link" href="{% url 'admin:index' %}">Admin</a>
             </div>
+              
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="{% url 'admin:index' %}">Admin</a>
+            </div> 
+              
             <!-- Navbar Right Side -->
             <!-- <div class="navbar-nav">
               {% if user.is_authenticated %}
