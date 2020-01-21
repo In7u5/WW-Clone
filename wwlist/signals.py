@@ -80,7 +80,7 @@ def create_ww_order(sender, instance, created, **kwargs):
                 update_balance(user, instance)
 
                 #Prepare Emails to every User with the unique Order-Link
-                html_message = render_to_string('wwlist/ww_order_email.html', {'user_first_name': user.first_name, 'HOSTNAME:str(HOSTNAME), 'order_id': order_id})
+                html_message = render_to_string('wwlist/ww_order_email.html', {'user_first_name': user.first_name, 'HOSTNAME' : str(HOSTNAME), 'order_id': order_id})
                 text_message = 'Servus ' + str(user.first_name) + ',\n\n' + \
                                 'hier deine Einladung für den ' + str(instance) + '.\n' + \
                                 'Bitte benutze den folgenden Link für deine Bestellung:' + 'http://' + str(HOSTNAME) + '/order/' + str(order_id) + '\n' + \
