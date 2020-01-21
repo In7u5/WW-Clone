@@ -69,42 +69,26 @@
     </table>
 
 
-    <!-- <table class="table table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">Member</th>
-                <th class="text-center" scope="col">Balance</th>
-                <th class="text-center" scope="col" style="width: 20%">WW</th>
-                <th class="text-center" scope="col" style="width: 20%;">Brezn</th>
-                <th class="text-danger text-center" scope="col" style="width: 10%;">-€</th>
-                <th class="text-success text-center" scope="col" style="width: 10%;">+€</th>
 
+<table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th class="text-muted" scope="col">Member</th>
+                <th class="text-muted" scope="col">Balance</th>
             </tr>
         </thead>
         <tbody>
-            {% for WW_Order in WW_Orders %}
-                {% if WW_Order.friday == Friday %}
-                    {% for User in Users %}
-                        {% if User == WW_Order.user %}
-                            {% if WW_Order.ww > 0 or WW_Order.brezn > 0 %}
+            {% for Balance in Balances %}
+                {% if Balance.friday == Friday %}
+                    {% for WW_Order in WW_Orders %}
+                        {% if WW_Order.friday == Friday and WW_Order.user == Balance.user %}
+                            {% if WW_Order.ww == 0 and WW_Order.brezn == 0 %}
                             <tr>
                                 <th>{{ WW_Order.user.first_name }} {{ WW_Order.user.last_name }}</th>
-                                {% for Balance in Balances %}
-                                    {% if Balance.friday == Friday and Balance.user == User %}
-                                        {% if Balance.balance >= 0 %}
-                                            <td class="text-success text-center">{{ Balance.balance }}€</td>
-                                        {% else %}
-                                            <td class="text-danger text-center">{{ Balance.balance }}€</td>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                                <td class="text-center">{{ WW_Order.ww }}</td>
-                                <td class="text-center">{{ WW_Order.brezn }}</td>
-                                <td class="text-danger text-center">{{ WW_Order.price_total }}€</td>
-                                {% if WW_Order.purchase == 0 %}
-                                    <td class="text-center">-</td>
+                                {% if Balance.balance >= 0 %}
+                                    <td class="text-success text-center">{{ Balance.balance }}€</td>
                                 {% else %}
-                                    <td class="bg-success text-center">{{ WW_Order.purchase }}€</td>
+                                    <td class="text-danger text-center">{{ Balance.balance }}€</td>
                                 {% endif %}
                             </tr>
                             {% endif %}
@@ -114,24 +98,6 @@
             {% endfor %}
         </tbody>
     </table>
-    <table class="table table-sm table dark">
-        <thead>
-            <tr>
-                <td>Price</td>
-                <th scope="col">€/WW</th>
-                <th scope="col">+ € Senf/WW</th>
-                <th scope="col">€/Brezn</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th scope="row"></th>
-                <td>{{ Friday.cost_ww }}</td>
-                <td>{{ Friday.cost_mustard }}</td>
-                <td>{{ Friday.cost_brezn }}</td>
-            </tr>
-        </tbody>
-    </table> -->
 
 
 {% endfor %}
