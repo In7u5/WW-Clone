@@ -13,7 +13,7 @@ from wwlist.models import Friday
 
 #Check if today is Wednesday.
 #If yes, create the next Friday.
-if date.today().weekday() == 4:
+if date.today().weekday() == 2:
     if __name__ == '__main__':    
         f = Friday()
         delta = timedelta(days=1)
@@ -25,7 +25,7 @@ if date.today().weekday() == 4:
         os.utime('/var/www/ktmtwwub_pythonanywhere_com_wsgi.py')
 #Check if today is Thursday.
 #If yes, finish the ordering.
-elif date.today().weekday() == 5:
+elif date.today().weekday() == 3:
     if __name__ == '__main__':    
         f = Friday.objects.all().order_by('-date').first()
         if f.date > date.today() and f.ordering_finished == False:
