@@ -17,6 +17,7 @@ env = environ.Env(
 # reading .env file
 environ.Env.read_env()
 HOSTNAME = env('HOSTNAME')
+hostname = str(HOSTNAME)
 
 
 def send_mass_html_mail(datatuple, fail_silently=False, user=None, password=None, 
@@ -70,7 +71,6 @@ def create_ww_order(sender, instance, created, **kwargs):
     #Loop through all active Users and create Orders for them, as soon as a new Friday is created.
     if created:
         email_list = []
-        hostname = str(HOSTNAME)
         for user in User.objects.all():
             if user.is_active:
                 #Create a unique ID for every Order, which will be used as the Primary-Key and the URL
