@@ -129,6 +129,7 @@ def create_ww_order(sender, instance, created, **kwargs):
                     email_name = str(lowest_user.first_name)
                 sum_ww = WW_Order.objects.filter(friday=instance).aggregate(Sum('ww'))['ww__sum']
                 sum_brezn = WW_Order.objects.filter(friday=instance).aggregate(Sum('brezn'))['brezn__sum']
+                html_message = render_to_string('wwlist/ww_purchasing_email.html', {'email_name': email_name, 'hostname' : hostname, 'sum_ww': sum_ww, 'sum_brezn': sum_brezn})
                 text_message = 'Servus ' + str(email_name) + ',\n\n' + \
                                     'bitte für morgen '  + str(sum_ww) + ' (Stück) WW und ' + str(sum_brezn) + ' Brezn besorgen und fachgerecht zubereiten.\n' + \
                                     'Schau bitte auch noch nach, ob genügend Senf vorhanden ist.' + '\n\n' + \
@@ -136,11 +137,12 @@ def create_ww_order(sender, instance, created, **kwargs):
                                     'Username: ww / Password: Wurst1' + '\n\n' + \
                                     'Viele Grüße\n' + \
                                     'Das WW-Team'
-                purchasing_mail = EmailMessage(subject='WW und Brezn',
+                purchasing_mail = EmailMultiAlternatives(subject='WW und Brezn',
                                             body=text_message,
                                             to=[lowest_user.email],
                                             cc=purchasing_mail_cc
                                             )
+                purchasing_mail.attach_alternative(html_message, "text/html")
                 purchasing_mail.send()
                 #Set the mail_sent-parameter of the Friday.
                 instance.mail_sent = True
