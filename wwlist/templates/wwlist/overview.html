@@ -28,9 +28,9 @@
                             {% if WW_Order.ww > 0 or WW_Order.brezn > 0 %}
                             <tr>
                                 <th>{{ WW_Order.user.first_name }} {{ WW_Order.user.last_name }}</th>
-                                {% if Balance.balance >= 0 and friday.ordering_finished == True %}
+                                {% if Balance.balance >= 0 and Friday.ordering_finished == True %}
                                     <td class="text-success text-center">{{ Balance.balance }}€</td>
-                                {% elif Balance.balance < 0 and friday.ordering_finished == True %}
+                                {% elif Balance.balance < 0 and Friday.ordering_finished == True %}
                                     <td class="text-danger text-center">{{ Balance.balance }}€</td>
                                 {% else %}
                                     <td class="text-center">-</td>
