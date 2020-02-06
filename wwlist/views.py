@@ -21,7 +21,7 @@ class Overview(ListView):
         context.update({
             'WW_Orders': WW_Order.objects.all(),
             'Users': User.objects.all(),
-            'Balances':Balance.objects.all().order_by('balance')
+            'Balances':Balance.objects.all().order_by('user.last_name')
         })
         return context
 
